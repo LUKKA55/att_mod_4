@@ -15,8 +15,18 @@ const recadoSlice = createSlice({
 
 			state.recados.splice(index, 1);
 		},
+		update: (state, action: PayloadAction<Irecado>) => {
+			const recados = state.recados;
+			const update = recados.findIndex((ele) => ele.id === action.payload.id);
+			recados[update].title = action.payload.title;
+			recados[update].text = action.payload.text;
+
+			recados.splice(update, 1, recados[update]);
+
+			state.recados = recados;
+		},
 	},
 });
 
-export const { publicar, excluir } = recadoSlice.actions;
+export const { publicar, excluir, update } = recadoSlice.actions;
 export default recadoSlice.reducer;

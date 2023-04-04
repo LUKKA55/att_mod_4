@@ -4,7 +4,7 @@ const FormStyledRecado = styled.section`
 	width: 100%;
 	height: 12%;
 	color: white;
-	background-color: #494545;
+	background-color: #928f8f;
 	display: flex;
 	justify-content: space-around;
 	align-items: center;

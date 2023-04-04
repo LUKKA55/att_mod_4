@@ -20,14 +20,20 @@ const Form = ({ mode }: Mode) => {
 	//-----------LOGAR-------------
 	const [email, setEmail] = useState('');
 	const [senha, setSenha] = useState('');
+	const [nick, setNick] = useState('');
+
 	//-----------CADASTRAR-------------
 	const [email2, setEmail2] = useState('');
 	const [senha2, setSenha2] = useState('');
 	const [senhaConfirm, setSenhaconfirm] = useState('');
+	const [nick2, setNick2] = useState('');
 	//-----------ERRO LOGAR-------------
 	const [erroEmail, setErroemail] = useState(false);
 	const [erroSenha, setErrosenha] = useState(false);
+	const [erroNick, setErronick] = useState(false);
+
 	//-----------ERRO CADASTRAR-------------
+	const [erroNick2, setErronick2] = useState(false);
 	const [erroEmail2, setErroemail2] = useState(false);
 	const [erroSenha2, setErrosenha2] = useState(false);
 	const [errosenhaConfirm, setErrosenhaconfirm] = useState(false);
@@ -44,7 +50,15 @@ const Form = ({ mode }: Mode) => {
 		} else {
 			setErrosenha(false);
 		}
-	}, [email, senha]);
+		if (nick.length !== 0) {
+			let nick_verification = usuarios.find((ele) => ele.nick2 === nick);
+			if (nick_verification === undefined) {
+				setErronick(true);
+			} else {
+				setErronick(false);
+			}
+		}
+	}, [email, senha, nick]);
 
 	//=====================CADASTRAR=======================
 	useEffect(() => {
@@ -68,7 +82,14 @@ const Form = ({ mode }: Mode) => {
 		} else {
 			setErrosenhaconfirm(false);
 		}
-	}, [email2, senha2, senhaConfirm]);
+		let nick_verification = usuarios.find((ele) => ele.nick2 === nick2);
+
+		if (nick_verification !== undefined) {
+			setErronick2(true);
+		} else {
+			setErronick2(false);
+		}
+	}, [email2, senha2, senhaConfirm, nick2]);
 
 	const Cadastrar_Usu = () => {
 		if (email2.length === 0 || senha2.length === 0) {
@@ -77,6 +98,7 @@ const Form = ({ mode }: Mode) => {
 			dispatch(
 				cadastrar({
 					id: crypto.randomUUID(),
+					nick2: nick2,
 					email2,
 					senha2,
 				})
@@ -90,12 +112,17 @@ const Form = ({ mode }: Mode) => {
 			alert('preencha corretamente ou faça seu cadastro');
 		} else {
 			const acheiUsuario = usuarios.find(
-				(ele) => ele.email2 === email && ele.senha2 === senha
+				(ele) =>
+					ele.email2 === email && ele.senha2 === senha && ele.nick2 === nick
 			);
 			if (acheiUsuario) {
 				navigate('/Home');
 				dispatch(
-					setUsuarioOnline({ id: acheiUsuario.id, email2: acheiUsuario.email2 })
+					setUsuarioOnline({
+						id: acheiUsuario.id,
+						nick2: acheiUsuario.nick2,
+						email2: acheiUsuario.email2,
+					})
 				);
 			} else {
 				alert('preencha corretamente ou faça seu cadastro');
@@ -122,6 +149,13 @@ const Form = ({ mode }: Mode) => {
 						>
 							Logar
 						</Typography>
+						<TextField
+							label="nick"
+							type="text"
+							value={nick}
+							onChange={(e) => setNick(e.target.value)}
+							error={erroNick}
+						/>
 						<TextField
 							label="email"
 							type="email"
@@ -161,6 +195,13 @@ const Form = ({ mode }: Mode) => {
 						>
 							Cadastrar-se
 						</Typography>
+						<TextField
+							label="nick"
+							type="text"
+							value={nick2}
+							onChange={(e) => setNick2(e.target.value)}
+							error={erroNick2}
+						/>
 						<TextField
 							label="email"
 							type="email"

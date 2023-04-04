@@ -4,7 +4,7 @@ import Button from '@mui/material/Button';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../store/store';
-import { excluir, publicar } from '../../store/feature/recadoSlice';
+import { excluir, publicar, update } from '../../store/feature/recadoSlice';
 import {
 	Card,
 	CardActions,
@@ -18,6 +18,7 @@ import {
 	FormStyledListaRecado,
 	FormStyledRecado,
 } from '../formStyled/formStyleRecado';
+import { idText } from 'typescript';
 
 const FormHome = () => {
 	const dispatch = useDispatch();
@@ -32,10 +33,36 @@ const FormHome = () => {
 			navigate('/');
 		}
 	}, [usuarioOnline]);
+
 	const [title, setTitle] = useState('');
 	const [text, setText] = useState('');
-	const PostarRecado = () => {
+	const [iDE, setIDE] = useState(0);
+
+	const editar = (ide: number) => {
+		recados.forEach((ele) => {
+			if (ele.id === ide) {
+				setTitle(ele.title);
+				setText(ele.text);
+				setIDE(ele.id);
+				console.log(iDE);
+			}
+		});
+	};
+
+	const postarRecado = () => {
 		if (title.length === 0 || text.length === 0) {
+		} else if (iDE !== 0) {
+			console.log(iDE);
+			dispatch(
+				update({
+					id: iDE,
+					title,
+					text,
+				})
+			);
+			setIDE(0);
+			setTitle('');
+			setText('');
 		} else {
 			dispatch(
 				publicar({
@@ -49,25 +76,15 @@ const FormHome = () => {
 		}
 	};
 
-	const Editar = (id: number) => {
-		recados.filter((ele) => {
-			if (ele.id === id) {
-				setTitle(ele.title);
-				setText(ele.text);
-			}
-		});
-	};
-
 	return (
 		<React.Fragment>
 			<FormStyledRecado>
-				<Button
-					variant="outlined"
-					color="error"
-					onClick={() => dispatch(setUsuarioOnline(null))}
+				<Typography
+					variant="h4"
+					sx={{ display: 'flex', justifyContent: 'center', color: 'black' }}
 				>
-					Sair
-				</Button>
+					olá {usuarioOnline?.nick2}
+				</Typography>
 				<TextField
 					label="título"
 					type="text"
@@ -81,11 +98,18 @@ const FormHome = () => {
 					onChange={(e) => setText(e.target.value)}
 				/>
 				<Button
-					variant="outlined"
+					variant="contained"
 					color="primary"
-					onClick={() => PostarRecado()}
+					onClick={() => postarRecado()}
 				>
 					Publicar
+				</Button>
+				<Button
+					variant="contained"
+					color="error"
+					onClick={() => dispatch(setUsuarioOnline(null))}
+				>
+					Sair
 				</Button>
 			</FormStyledRecado>
 			<FormStyledListaRecado>
@@ -101,7 +125,9 @@ const FormHome = () => {
 				>
 					{recados.map((ele) => (
 						<Grid item xs={4}>
-							<Card sx={{ borderRadius: '20px' }}>
+							<Card
+								sx={{ borderRadius: '20px', backgroundColor: 'whitesmoke' }}
+							>
 								<CardContent>
 									<Typography gutterBottom variant="h5" component="div">
 										{ele.title}
@@ -117,7 +143,7 @@ const FormHome = () => {
 									>
 										Excluir
 									</Button>
-									<Button size="small" onClick={() => Editar(ele.id)}>
+									<Button size="small" onClick={() => editar(ele.id)}>
 										Editar
 									</Button>
 								</CardActions>

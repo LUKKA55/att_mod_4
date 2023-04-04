@@ -33,7 +33,3 @@ const usuarioSlice = createSlice({
 
 export const { cadastrar, setUsuarioOnline } = usuarioSlice.actions;
 export default usuarioSlice.reducer;
-
-// export const { selectAll, selectById } = usuarioAdaptor.getSelectors(
-// 	(state: RootState) => state.itemReducer
-// );
