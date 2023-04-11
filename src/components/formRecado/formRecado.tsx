@@ -11,6 +11,7 @@ import {
 	CardContent,
 	Typography,
 	Grid,
+	Box,
 } from '@mui/material';
 
 import { setUsuarioOnline } from '../../store/feature/usuarioSlice';
@@ -18,7 +19,6 @@ import {
 	FormStyledListaRecado,
 	FormStyledRecado,
 } from '../formStyled/formStyleRecado';
-import { idText } from 'typescript';
 
 const FormHome = () => {
 	const dispatch = useDispatch();
@@ -44,7 +44,6 @@ const FormHome = () => {
 				setTitle(ele.title);
 				setText(ele.text);
 				setIDE(ele.id);
-				console.log(iDE);
 			}
 		});
 	};
@@ -52,7 +51,6 @@ const FormHome = () => {
 	const postarRecado = () => {
 		if (title.length === 0 || text.length === 0) {
 		} else if (iDE !== 0) {
-			console.log(iDE);
 			dispatch(
 				update({
 					id: iDE,
@@ -79,38 +77,47 @@ const FormHome = () => {
 	return (
 		<React.Fragment>
 			<FormStyledRecado>
-				<Typography
-					variant="h4"
-					sx={{ display: 'flex', justifyContent: 'center', color: 'black' }}
-				>
-					olá {usuarioOnline?.nick2}
-				</Typography>
-				<TextField
-					label="título"
-					type="text"
-					value={title}
-					onChange={(e) => setTitle(e.target.value)}
-				/>
-				<TextField
-					label="texto"
-					type="text"
-					value={text}
-					onChange={(e) => setText(e.target.value)}
-				/>
-				<Button
-					variant="contained"
-					color="primary"
-					onClick={() => postarRecado()}
-				>
-					Publicar
-				</Button>
-				<Button
-					variant="contained"
-					color="error"
-					onClick={() => dispatch(setUsuarioOnline(null))}
-				>
-					Sair
-				</Button>
+				<Box>
+					<Typography
+						variant="h4"
+						sx={{ display: 'flex', justifyContent: 'center', color: 'black' }}
+					>
+						olá {usuarioOnline?.nick2}
+					</Typography>
+					<Box
+						sx={{
+							display: 'flex',
+							color: 'black',
+						}}
+					>
+						<TextField
+							label="título"
+							type="text"
+							value={title}
+							onChange={(e) => setTitle(e.target.value)}
+						/>
+						<TextField
+							label="texto"
+							type="text"
+							value={text}
+							onChange={(e) => setText(e.target.value)}
+						/>
+						<Button
+							variant="contained"
+							color="primary"
+							onClick={() => postarRecado()}
+						>
+							Publicar
+						</Button>
+						<Button
+							variant="contained"
+							color="error"
+							onClick={() => dispatch(setUsuarioOnline(null))}
+						>
+							Sair
+						</Button>
+					</Box>
+				</Box>
 			</FormStyledRecado>
 			<FormStyledListaRecado>
 				<Grid
@@ -124,7 +131,7 @@ const FormHome = () => {
 					spacing={2}
 				>
 					{recados.map((ele) => (
-						<Grid item xs={4}>
+						<Grid item xs={6} md={4}>
 							<Card
 								sx={{ borderRadius: '20px', backgroundColor: 'whitesmoke' }}
 							>

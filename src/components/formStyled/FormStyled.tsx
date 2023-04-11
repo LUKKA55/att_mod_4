@@ -9,6 +9,12 @@ const FormStyled = styled.section`
 	justify-content: center;
 	align-items: center;
 	border-radius: 10px;
+
+	@media (max-width: 900px) {
+		width: 100%;
+		height: 100%;
+		border-radius: 0px;
+	}
 `;
 
 export { FormStyled };
