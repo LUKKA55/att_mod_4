@@ -3,19 +3,22 @@ import React, { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux/es/exports';
 import { useNavigate } from 'react-router-dom';
-import { cadastrar, setUsuarioOnline } from '../../store/feature/usuarioSlice';
-import { RootState } from '../../store/store';
-import { User } from '../../type/usuarioInterface';
+import {
+	loginUser,
+	postUser,
+	setUsuarioOnline,
+} from '../../store/feature/usuarioSlice';
+import { AppDispatch, RootState } from '../../store/store';
 
 interface Mode {
 	mode: 'Login' | 'Signup';
 }
 const Form = ({ mode }: Mode) => {
 	const navigate = useNavigate();
-	const { usuarios, usuarioOnline } = useSelector(
+	const dispatch: AppDispatch = useDispatch();
+	const { usuarios, message, usuarioOnline } = useSelector(
 		(state: RootState) => state.usuarioSlice
 	);
-	const dispatch = useDispatch();
 
 	//-----------LOGAR-------------
 	const [email, setEmail] = useState('');
@@ -28,9 +31,7 @@ const Form = ({ mode }: Mode) => {
 	const [senhaConfirm, setSenhaconfirm] = useState('');
 	const [nick2, setNick2] = useState('');
 	//-----------ERRO LOGAR-------------
-	const [erroEmail, setErroemail] = useState(false);
 	const [erroSenha, setErrosenha] = useState(false);
-	const [erroNick, setErronick] = useState(false);
 
 	//-----------ERRO CADASTRAR-------------
 	const [erroNick2, setErronick2] = useState(false);
@@ -40,25 +41,12 @@ const Form = ({ mode }: Mode) => {
 
 	//=================LOGAR================================
 	useEffect(() => {
-		if (email.length > 1 && email.length <= 6) {
-			setErroemail(true);
-		} else {
-			setErroemail(false);
-		}
 		if (senha.length > 1 && senha.length < 8) {
 			setErrosenha(true);
 		} else {
 			setErrosenha(false);
 		}
-		if (nick.length !== 0) {
-			let nick_verification = usuarios.find((ele) => ele.nick2 === nick);
-			if (nick_verification === undefined) {
-				setErronick(true);
-			} else {
-				setErronick(false);
-			}
-		}
-	}, [email, senha, nick]);
+	}, [senha]);
 
 	//=====================CADASTRAR=======================
 	useEffect(() => {
@@ -91,43 +79,32 @@ const Form = ({ mode }: Mode) => {
 		}
 	}, [email2, senha2, senhaConfirm, nick2]);
 
-	const Cadastrar_Usu = () => {
-		if (email2.length === 0 || senha2.length === 0) {
-			alert('preencha corretamente');
-		} else {
-			dispatch(
-				cadastrar({
-					id: crypto.randomUUID(),
-					nick2: nick2,
-					email2,
-					senha2,
-				})
-			);
+	useEffect(() => {
+		if (message === 'Novo user cadastrado com sucesso') {
 			navigate('/');
 		}
+		if (usuarioOnline === true) {
+			navigate('/Home');
+		}
+	}, [message, usuarioOnline]);
+
+	const Cadastrar_Usu = async () => {
+		const data = {
+			nick: nick2,
+			email: email2,
+			senha: senha2,
+			senha2: senhaConfirm,
+		};
+		dispatch(postUser(data));
 	};
 
 	const Logar = () => {
-		if (email.length === 0 || senha.length === 0) {
-			alert('preencha corretamente ou faça seu cadastro');
-		} else {
-			const acheiUsuario = usuarios.find(
-				(ele) =>
-					ele.email2 === email && ele.senha2 === senha && ele.nick2 === nick
-			);
-			if (acheiUsuario) {
-				navigate('/Home');
-				dispatch(
-					setUsuarioOnline({
-						id: acheiUsuario.id,
-						nick2: acheiUsuario.nick2,
-						email2: acheiUsuario.email2,
-					})
-				);
-			} else {
-				alert('preencha corretamente ou faça seu cadastro');
-			}
-		}
+		const data = {
+			nick: nick,
+			email: email,
+			senha: senha,
+		};
+		dispatch(loginUser(data));
 	};
 
 	const trocaPagina = () => {
@@ -154,14 +131,12 @@ const Form = ({ mode }: Mode) => {
 							type="text"
 							value={nick}
 							onChange={(e) => setNick(e.target.value)}
-							error={erroNick}
 						/>
 						<TextField
 							label="email"
 							type="email"
 							value={email}
 							onChange={(e) => setEmail(e.target.value)}
-							error={erroEmail}
 						/>
 						<TextField
 							label="senha"

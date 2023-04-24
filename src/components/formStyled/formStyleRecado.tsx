@@ -6,8 +6,9 @@ const FormStyledRecado = styled.section`
 	color: white;
 	background-color: #928f8f;
 	display: flex;
-	justify-content: center;
+	justify-content: space-around;
 	align-items: center;
+	z-index: 1;
 
 	@media (max-width: 900px) {
 		border-radius: 0px;

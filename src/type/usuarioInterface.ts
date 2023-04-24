@@ -5,4 +5,5 @@ export interface User {
 	nick2: string;
 	email2?: string;
 	senha2?: string;
+	senhaConfirm?: string;
 }
