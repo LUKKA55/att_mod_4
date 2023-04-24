@@ -5,7 +5,7 @@ class Api {
 		this.setBaseUrl();
 	}
 	setBaseUrl = () => {
-		return axios.create({ baseURL: 'http://localhost:4000' });
+		return axios.create({ baseURL: 'https://api-mod-5.onrender.com' });
 	};
 
 	async doPost(url: string, body: object) {
